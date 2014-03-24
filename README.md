@@ -328,7 +328,26 @@
 
       // ...stuff...
     }
-    ````
+    ```
+  - No nested closures (as per felixge's [Node.js Style Guide](https://github.com/felixge/node-style-guide#no-nested-closures))
+
+    ```javascript
+    // good
+    setTimeout(function() {
+      client.connect(afterConnect);
+    }, 1000);
+    
+    function afterConnect() {
+      console.log('winning');
+    }
+    
+    // bad
+    setTimeout(function() {
+      client.connect(function() {
+        console.log('losing');
+      });
+    }, 1000);
+    ```
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -1308,7 +1327,7 @@
     window.app.anothermodule = require('./another-module.js');
     
     // Runtime
-    $(function () {
+    $(function() {
         // Init app modules
         for (var key in window.app) {
             if (window.app[key]) {
@@ -1333,21 +1352,21 @@
       // Module properties
       total: 0,
       // Init function always run on document ready
-      init: function () {
+      init: function() {
         var _this = this;
         
         _this.bind();
       },
       // Bind user interactions
-      bind: function () {
+      bind: function() {
         var _this = this;
         
-        _this.$JQUERY_ELEM.on('click', function () {
+        _this.$JQUERY_ELEM.on('click', function() {
           _this.onClick();
         });
       },
       // Methods
-      onClick: function (m) {
+      onClick: function(m) {
         var _this = this,
             message = m;
             
@@ -1367,7 +1386,7 @@
   - The module should start with a `!`. This ensures that if a malformed module forgets to include a final semicolon there aren't errors in production when the scripts get concatenated. [Explanation](https://github.com/airbnb/javascript/issues/44#issuecomment-13063933)
 
     ```javascript
-    !function (app) {
+    !function(app) {
       // Module
       var module = {
         /**
