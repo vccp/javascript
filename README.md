@@ -1312,21 +1312,25 @@
   
   - Avoid including large frameworks/libraries as part of your bundle, either include these seperately or create a seperate bundle.
   - The filename should be lowercased, spaces as dashes, dots to define sublevels (eg. module-name.js)
-  - Follow standard module where appropriate.
+  - Follow this standard module pattern where appropriate.
 
     ```javascript
     var dependency = require('dependency');
     
     // Module
     module.exports = {
+      // Constants
       $JQUERY_ELEM: $('.some-element'),
       MESSAGE: 'You clicked',
+      // Module properties
       total: 0,
+      // Init function always run on document ready
       init: function () {
         var self = this;
         
         self.bind();
       },
+      // Bind user interactions
       bind: function () {
         var self = this;
         
@@ -1334,6 +1338,7 @@
           self.onClick();
         });
       },
+      // Methods
       onClick: function (m) {
         var self = this,
             message = m;
@@ -1341,6 +1346,8 @@
         self.total += 1;
         
         console.log(self.message + ' ' + self.total + ' times');
+        
+        return self;
       }
     };
     ```
