@@ -318,6 +318,17 @@
       // ...stuff...
     }
     ```
+    
+  - Where appropriate, use shorthand arguments/parameters and assign these to descriptive variables at the top of the function.
+  
+    ```javascript
+    function ohai(coll, m) {
+      var collection = coll,
+          message = m;
+
+      // ...stuff...
+    }
+    ````
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -1057,41 +1068,22 @@
     });
     ```
 
-  - Use a leading underscore `_` when naming private properties
+  - When saving a reference to `this` use `self`.
 
     ```javascript
     // bad
-    this.__firstName__ = 'Panda';
-    this.firstName_ = 'Panda';
+    function() {
+      var this = _this;
+      return function() {
+        console.log(_this);
+      };
+    }
 
     // good
-    this._firstName = 'Panda';
-    ```
-
-  - When saving a reference to `this` use `_this`.
-
-    ```javascript
-    // bad
     function() {
       var self = this;
       return function() {
         console.log(self);
-      };
-    }
-
-    // bad
-    function() {
-      var that = this;
-      return function() {
-        console.log(that);
-      };
-    }
-
-    // good
-    function() {
-      var _this = this;
-      return function() {
-        console.log(_this);
       };
     }
     ```
