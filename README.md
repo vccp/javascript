@@ -1068,22 +1068,30 @@
     });
     ```
 
-  - When saving a reference to `this` use `self`.
+  - When saving a reference to `this` use `_this`.
 
     ```javascript
     // bad
     function() {
-      var this = _this;
+      var self = this;
       return function() {
-        console.log(_this);
+        console.log(self);
+      };
+    }
+
+    // bad
+    function() {
+      var that = this;
+      return function() {
+        console.log(that);
       };
     }
 
     // good
     function() {
-      var self = this;
+      var _this = this;
       return function() {
-        console.log(self);
+        console.log(_this);
       };
     }
     ```
@@ -1326,28 +1334,28 @@
       total: 0,
       // Init function always run on document ready
       init: function () {
-        var self = this;
+        var _this = this;
         
-        self.bind();
+        _this.bind();
       },
       // Bind user interactions
       bind: function () {
-        var self = this;
+        var _this = this;
         
-        self.$JQUERY_ELEM.on('click', function () {
-          self.onClick();
+        _this.$JQUERY_ELEM.on('click', function () {
+          _this.onClick();
         });
       },
       // Methods
       onClick: function (m) {
-        var self = this,
+        var _this = this,
             message = m;
             
-        self.total += 1;
+        _this.total += 1;
         
-        console.log(self.message + ' ' + self.total + ' times');
+        console.log(_this.message + ' ' + _this.total + ' times');
         
-        return self;
+        return _this;
       }
     };
     ```
