@@ -1,6 +1,6 @@
-# Airbnb JavaScript Style Guide() {
+# VCCP JavaScript Style Guide() {
 
-*A mostly reasonable approach to JavaScript*
+*A mostly reasonable approach to JavaScript, forked from Airbnb*
 
 
 ## Table of Contents
@@ -24,7 +24,8 @@
   1. [Accessors](#accessors)
   1. [Constructors](#constructors)
   1. [Events](#events)
-  1. [Modules](#modules)
+  1. [CommonJS Modules](#commonjs-modules)
+  1. [Non CommonJS Modules](#non-commonjs-modules)
   1. [jQuery](#jquery)
   1. [ECMAScript 5 Compatibility](#ecmascript-5-compatibility)
   1. [Testing](#testing)
@@ -1282,36 +1283,96 @@
   **[⬆ back to top](#table-of-contents)**
 
 
-## Modules
+## CommonJS Modules
 
-  - The module should start with a `!`. This ensures that if a malformed module forgets to include a final semicolon there aren't errors in production when the scripts get concatenated. [Explanation](https://github.com/airbnb/javascript/issues/44#issuecomment-13063933)
-  - The file should be named with camelCase, live in a folder with the same name, and match the name of the single export.
-  - Add a method called noConflict() that sets the exported module to the previous version and returns this one.
-  - Always declare `'use strict';` at the top of the module.
+  - Define modules as [CommonJS modules](http://wiki.commonjs.org/wiki/Modules/1.1)
+  - On the client side, bundle these together with [Browserify](http://browserify.org/). [grunt-browserify](https://github.com/jmreidy/grunt-browserify/) is recommended.
+  - Declare all dependencies at the top of the module.
+  - Use a clearly identifiable entry point for the app, such as `index.js`, `app.js` or `main.js`. A standard approach could look something like:
 
     ```javascript
-    // fancyInput/fancyInput.js
+    /**
+     * App
+     *
+     * @author developer@vccp.com
+     */
+    
+    // Namespace
+    window.app = window.app || {};
+    
+    // Constants
+    window.app.BASE_DIR = '/js';
+    
+    // App modules
+    window.app.module = require('./module.js');
+    window.app.anothermodule = require('./another-module.js');
+    
+    // Runtime
+    $(function () {
+        // Init app modules
+        for (var key in window.app) {
+            if (window.app[key]) {
+                window.app[key].init();
+            }
+        }
+    });
+    ```
+  
+  - Avoid including large frameworks/libraries as part of your bundle, either include these seperately or create a seperate bundle.
+  - The filename should be lowercased, spaces as dashes, dots to define sublevels (eg. module-name.js)
+  - Follow standard module where appropriate.
 
-    !function(global) {
-      'use strict';
-
-      var previousFancyInput = global.FancyInput;
-
-      function FancyInput(options) {
-        this.options = options || {};
+    ```javascript
+    var dependency = require('dependency');
+    
+    // Module
+    module.exports = {
+      $JQUERY_ELEM: $('.some-element'),
+      MESSAGE: 'You clicked',
+      total: 0,
+      init: function () {
+        var self = this;
+        
+        self.bind();
+      },
+      bind: function () {
+        var self = this;
+        
+        self.$JQUERY_ELEM.on('click', function () {
+          self.onClick();
+        });
+      },
+      onClick: function (m) {
+        var self = this,
+            message = m;
+            
+        self.total += 1;
+        
+        console.log(self.message + ' ' + self.total + ' times');
       }
-
-      FancyInput.noConflict = function noConflict() {
-        global.FancyInput = previousFancyInput;
-        return FancyInput;
-      };
-
-      global.FancyInput = FancyInput;
-    }(this);
+    };
     ```
 
 **[⬆ back to top](#table-of-contents)**
 
+## Non CommonJS Modules
+
+  - The module should start with a `!`. This ensures that if a malformed module forgets to include a final semicolon there aren't errors in production when the scripts get concatenated. [Explanation](https://github.com/airbnb/javascript/issues/44#issuecomment-13063933)
+
+    ```javascript
+    !function (app) {
+      // Module
+      var module = {
+        /**
+         * Define module
+         */
+      };
+      // Namespace
+      app.module = module;
+    }(app);
+    ```
+
+**[⬆ back to top](#table-of-contents)**
 
 ## jQuery
 
